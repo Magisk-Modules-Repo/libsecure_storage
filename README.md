@@ -1,10 +1,10 @@
-# **libsecure_storage custom kernel companion**
+# **libsecure_storage companion for rooted Samsung devices**
 
 ## Description
 
 This Magisk module contains modified `libsecure_storage.so` libraries that allow Samsung Galaxy S9/S9+ (G960F/G965F), Tab S4 (T830/T835), and probably other rooted devices to function without losing Bluetooth pairings after reboot.
 
-After installing this module, manually edit `/system/etc/init/secure_storage_daemon.rc` and change the line with **start secure_storage** to **stop secure_storage**. This step is not required, but will stop the secure storage daemon from running unnecessarily. This change cannot be applied systemlessly, because the file is read by the system before Magisk starts.
+After installing this module, manually edit `/system/etc/init/secure_storage_daemon.rc` and change the line with **start secure_storage** to **stop secure_storage**. This step is not required, but will prevent the secure storage daemon from running unnecessarily. The change cannot be applied systemlessly, because the file is read by the system before Magisk starts.
 
 ## Changelog
 
