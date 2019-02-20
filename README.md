@@ -24,7 +24,7 @@ The use of this module on non-Oreo systems is untested. Installing it on such de
 
 ## Changelog
 
-2018-02-20: v1.2
+2019-02-20: v1.2
 
 - Update to latest Magisk template.
 - Minimum version of Magisk now v17.0.
