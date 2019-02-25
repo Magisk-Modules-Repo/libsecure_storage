@@ -24,6 +24,10 @@ The use of this module on non-Oreo systems is untested. Installing it on such de
 
 ## Changelog
 
+2019-02-25: v1.3
+
+- Add installation check for Android 8.x and issue warning if different.
+
 2019-02-20: v1.2
 
 - Update to latest Magisk template.

@@ -97,3 +97,11 @@ set_permissions() {
 # difficult for you to migrate your modules to newer template versions.
 # Make update-binary as clean as possible, try to only do function calls in it.
 
+check_os_ver() {
+  local os=$( getprop ro.build.version.release )
+  local major=${os%%.*}
+
+  if [ $major -ne 8 ]; then
+    ui_print "Warning! This device is running Android $os, not 8.x."
+  fi
+}

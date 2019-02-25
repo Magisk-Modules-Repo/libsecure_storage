@@ -1,7 +1,7 @@
 id=libsecure_storage
 name=libsecure_storage companion for rooted Samsung (Oreo) devices
-version=v1.2
-versionCode=12
+version=v1.3
+versionCode=13
 author=ianmacd
 description=Modified libsecure_storage.so libraries to restore retention of Bluetooth pairings on various rooted Samsung devices running Android 8.x.
 minMagisk=17000
