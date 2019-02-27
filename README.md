@@ -4,9 +4,11 @@
 
 This Magisk module contains modified `libsecure_storage.so` libraries that allow rooted Samsung Galaxy S9/S9+ (G960F/G965F), Tab S4 (T830/T835) and probably other devices to function without losing Bluetooth pairings after a reboot.
 
-This module was developed and tested using Android 8.x (Oreo). It is known to work well on systems running both 8.0 and 8.1.
+The module was developed and tested using Android 8.x (Oreo). It is known to perform as intended on systems running both Android 8.0 and 8.1.
 
-Since v1.4, the module provides experimental support for Android 9.x (Pie) systems).
+Since v1.4, the module provides experimental support for Android 9.x (Pie) systems), which have `libsecure_storage.so` installed in different locations.
+
+An extra issue affecting some, perhaps all Samsung Pie systems, is that of delayed Bluetooth initialisation. As of v1.5, a number of extra files will be installed on such devices to remedy this problem.
 
 After installing this module, you may wish to manually edit `/system/etc/init/secure_storage_daemon.rc` to change the line that reads:
 
@@ -26,9 +28,13 @@ No files other than the ones provided by this module are required.
 
 ## Changelog
 
+2019-02-27: v1.5
+
+- Install extra files on Pie devices to restore undelayed Bluetooth initialisation.
+
 2019-02-27: v1.4
 
-- Experimental Pie support: Check the actual location of files to be masked.
+- Experimental Pie support: Explicitly check for the actual location of files to be masked and act as required.
 
 2019-02-25: v1.3
 

@@ -101,12 +101,13 @@ check_os_ver() {
   local os=$( getprop ro.build.version.release )
   local major=${os%%.*}
 
+  ui_print ""
+  ui_print "- This device is running Android $os."
+
   if [ $major -ne 8 ]; then
-    ui_print ""
-    ui_print "- Warning! This device is running Android $os."
-    ui_print "-          Support for non-Oreo systems is experimental."
-    ui_print ""
+    ui_print "- Warning! Support for non-Oreo systems is experimental."
   fi
+  ui_print ""
 
   return $major
 }
@@ -122,15 +123,22 @@ install_mod() {
   ui_print "- Magisk mirror found at $mirror."
 
   if [ -f $mirror/system/lib/libsecure_storage.so ]; then
-    # Pie or similar: Move files to /system.
+    # Pie or similar: Move .so files to /system.
     #
     local instdir=/system
     mv $MODPATH/system/vendor/* $MODPATH/system && rmdir $MODPATH/system/vendor
+
+    # Install ss_id files under /system/etc/secure_storage. These are required
+    # to restore undelayed Bluetooth initialisation.
+    #
+    ui_print "- Installing files to restore undelayed Bluetooth initialisation..."
+    unzip -qo "$ZIP" ss_id.tar.gz -d $INSTALLER
+    tar xf $INSTALLER/ss_id.tar.gz -C $MODPATH
   else
-    # Oreo or similar: Leave files in /vendor.
+    # Oreo or similar: Leave .so files in /vendor.
     #
     local instdir=/vendor
   fi
 
-  ui_print "- When active, the module will mask .so files in $instdir."
+  ui_print "- When active, the module will mask .so files in $instdir/{lib,lib64}."
 }
