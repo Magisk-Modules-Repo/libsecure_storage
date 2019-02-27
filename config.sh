@@ -102,6 +102,35 @@ check_os_ver() {
   local major=${os%%.*}
 
   if [ $major -ne 8 ]; then
-    ui_print "Warning! This device is running Android $os, not 8.x."
+    ui_print ""
+    ui_print "- Warning! This device is running Android $os."
+    ui_print "-          Support for non-Oreo systems is experimental."
+    ui_print ""
   fi
+
+  return $major
+}
+
+install_mod() {
+  if [ -d /sbin/.magisk ]; then
+    local mirror=/sbin/.magisk/mirror
+  else
+    # Legacy /sbin/.core
+    #
+    local mirror=/sbin/.core/mirror
+  fi
+  ui_print "- Magisk mirror found at $mirror."
+
+  if [ -f $mirror/system/lib/libsecure_storage.so ]; then
+    # Pie or similar: Move files to /system.
+    #
+    local instdir=/system
+    mv $MODPATH/system/vendor/* $MODPATH/system && rmdir $MODPATH/system/vendor
+  else
+    # Oreo or similar: Leave files in /vendor.
+    #
+    local instdir=/vendor
+  fi
+
+  ui_print "- When active, the module will mask .so files in $instdir."
 }
