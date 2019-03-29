@@ -10,7 +10,7 @@ Since v1.4, the module provides experimental support for Android 9.x (Pie) syste
 
 An extra issue affecting some Samsung Pie systems is that of delayed Bluetooth initialisation. As of v1.5, the module will install a number of extra files on Pie systems to remedy this problem. Version v1.6 adds an exemption for the S10e/S10/S10+ devices, as it has been ascertained that these systems do not suffer from delayed Bluetooth initialisation.
 
-After installing this module, you may wish to manually edit `/system/etc/init/secure_storage_daemon.rc` (if it exists) to change the line that reads:
+After installing this module, you may wish to manually edit `/system/etc/init/secure_storage_daemon.rc` or `/vendor/etc/init/secure_storage_daemon.rc` (if either exists) to change the line that reads:
 
 ```
 start secure_storage
@@ -27,6 +27,10 @@ Whilst not required, this extra step will prevent the secure storage daemon from
 No files other than the ones provided by this module are required.
 
 ## Changelog
+
+2019-03-29: v1.7
+
+- Updated for Magisk v19 template format.
 
 2019-03-21: v1.6
 
