@@ -162,10 +162,6 @@ check_os_ver() {
 
   ui_print ""
   ui_print "- This device is running Android $os."
-
-  if [ $major -ne 8 ]; then
-    ui_print "- Warning! Support for non-Oreo systems is experimental."
-  fi
   ui_print ""
 
   return $major
