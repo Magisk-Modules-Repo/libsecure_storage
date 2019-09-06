@@ -122,9 +122,9 @@ REPLACE="
 # Set what you want to display when installing your module
 
 print_modname() {
-  ui_print "*******************************"
-  ui_print "  libsecure_storage companion  "
-  ui_print "*******************************"
+  ui_print "************************************"
+  ui_print "  libsecure_storage companion v1.8"
+  ui_print "************************************"
 }
 
 # Copy/extract your module files into $MODPATH in on_install.
@@ -135,7 +135,7 @@ on_install() {
   ui_print "- Extracting module files"
   unzip -o "$ZIPFILE" 'system/*' -d $MODPATH >&2
 
-  check_os_ver
+  display_os_ver
   install_mod
 }
 
@@ -156,15 +156,24 @@ set_permissions() {
 
 # You can add more functions to assist your custom script code
 
-check_os_ver() {
-  local os=$( getprop ro.build.version.release )
+display_os_ver() {
+  local os=$(getprop ro.build.version.release)
   local major=${os%%.*}
+  local bl=$(getprop ro.boot.bootloader)
+
+  # Firmware version starts at either 8th or 9th character, depending on length
+  # of bootloader string (12 or 13).
+  #
+  local fw=${bl:$((${#bl} - 4)):4}
+
+  # Device is either 4 or 5 characters long, depending on length of
+  # bootloader string.
+  #
+  local device=${bl:0:$((${#bl} - 8))}
 
   ui_print ""
-  ui_print "- This device is running Android $os."
+  ui_print "- This Android $os device is a $device running $fw firmware,"
   ui_print ""
-
-  return $major
 }
 
 install_mod() {
@@ -178,13 +187,6 @@ install_mod() {
     #
     local instdir=/system
     mv $MODPATH/system/vendor/* $MODPATH/system && rmdir $MODPATH/system/vendor
-
-    bl=$(getprop ro.boot.bootloader)
-
-    # Device is either 4 or 5 characters long, depending on length of
-    # bootloader string.
-    #
-    device=${bl:0:$((${#bl} - 8))}
 
   else
     # Oreo or similar: Leave .so files in /vendor.
