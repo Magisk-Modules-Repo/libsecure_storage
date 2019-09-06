@@ -186,17 +186,6 @@ install_mod() {
     #
     device=${bl:0:$((${#bl} - 8))}
 
-    if ! ( [ $device = G975F ] || [ $device = G973F ] || \
-	   [ $device = G970F ]); then
-
-      # Install ss_id files under /system/etc/secure_storage. These are
-      # reportedly required to restore undelayed Bluetooth initialisation to
-      # some devices, but the S10+ (G975F) certainly does not need them.
-      #
-      ui_print "- Installing files to restore undelayed Bluetooth initialisation..."
-      unzip -qo "$ZIP" ss_id.tar.gz -d $TMPDIR
-      tar xf $TMPDIR/ss_id.tar.gz -C $MODPATH
-    fi
   else
     # Oreo or similar: Leave .so files in /vendor.
     #
