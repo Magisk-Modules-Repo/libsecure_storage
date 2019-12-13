@@ -2,11 +2,13 @@
 
 ## Description
 
-This Magisk module contains modified `libsecure_storage.so` libraries that allow rooted Samsung Galaxy S10e/S10/S10+/S10+ 5G (G970F/G973F/G975F/G977B), Note 10/10+/10+ 5G (N970F/G975F/G976B), S9/S9+ (G960F/G965F), Tab S4 (T830/T835), Tab S5e (T720/T725), Tab S6 (T860/T865) and probably other devices to function without losing Bluetooth pairings after a reboot.
+This Magisk module contains modified `libsecure_storage.so` libraries that allow rooted Samsung Galaxy S10e/S10/S10+/S10+ 5G (G970F/G973F/G975F/G977B), Note 10/10+/10+ 5G (N970F/G975F/G976B), S9/S9+ (G960F/G965F), Tab S4 (T830/T835), Tab S5e (T720/T725), Tab S6 (T860/T865), Galaxy Fold/Fold 5G (F900F/F907B) and other devices to function without losing Bluetooth pairings after a reboot.
 
-The module was developed and tested on Android 8.x (Oreo) and 9.x (Pie). It is known to function as intended on the aforementioned device models.
+When Android 10 is detected, `libbluetooth.so` will be masked instead of `libsecure_storage.so`.
 
-Since version 1.4, the module has provided support for Android 9.x (Pie) systems.
+The module was developed and tested on Android 8.x (Oreo), 9.x (Pie) and 10. It is known to function as intended on the aforementioned device models.
+
+Support for Android 9.x (Pie) systems was added in version 1.4. Since version 2.0, Android 10 has also been supported.
 
 After installing this module, you may wish to manually edit `/system/etc/init/secure_storage_daemon.rc` or `/vendor/etc/init/secure_storage_daemon.rc` (if either exists) to change the line that reads:
 
@@ -25,6 +27,17 @@ Whilst not required, this extra step will prevent the secure storage daemon from
 No files other than the ones provided by this module are required.
 
 ## Changelog
+
+2019-12-13: v2.0
+
+- Android 10 support added. When Android 10 is detected at installation time,
+  the module will create a modified version of `libbluetooth.so` from the
+  native library and mask this instead of `libsecure_storage.so`.
+
+  Tested and verified on S10 series BSKO firmware and N10 series BSL7
+  firmware.
+
+  Thank you to Arthur Trouillot for finding the byte sequence to be patched.
 
 2019-09-06: v1.8
 
