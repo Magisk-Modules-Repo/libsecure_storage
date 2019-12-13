@@ -122,9 +122,9 @@ REPLACE="
 # Set what you want to display when installing your module
 
 print_modname() {
-  ui_print "************************************"
-  ui_print "  libsecure_storage companion v1.8"
-  ui_print "************************************"
+  ui_print "*************************************"
+  ui_print "  libsecure_storage companion v2.0  *"
+  ui_print "*************************************"
 }
 
 # Copy/extract your module files into $MODPATH in on_install.
@@ -157,8 +157,8 @@ set_permissions() {
 # You can add more functions to assist your custom script code
 
 display_os_ver() {
-  local os=$(getprop ro.build.version.release)
-  local major=${os%%.*}
+  os=$(getprop ro.build.version.release)
+  major=${os%%.*}
   local bl=$(getprop ro.boot.bootloader)
 
   # Firmware version starts at either 8th or 9th character, depending on length
@@ -176,17 +176,52 @@ display_os_ver() {
   ui_print ""
 }
 
+patch_libbluetooth() {
+  [ $major -ne 10 ] && return
+
+  local f=$mirror/system/lib64/libbluetooth.so
+  local tf=$MODPATH/system/lib64/libbluetooth.so
+
+  ui_print "- Attempting to patch $f..."
+  mkdir -p ${tf%/*}
+
+  # /system/bin/xxd must be used for the reconstruction, since Magisk Busybox
+  # doesn't support -r for reverse operation.
+  xxd -p $f | tr -d '\n ' |
+    sed -e 's/c8000034f4031f2af3031f2ae8030032/c8000035f4031f2af3031f2ae8031f2a/' |
+    /system/bin/xxd -rp > $tf
+
+  if ! cmp $tf $f >/dev/null; then
+    ui_print "- Patching succeeded."
+    touch -r $f $tf
+    lib=bluetooth
+  else
+    rm -f $tf
+    abort "- Patching failed. No change made."
+  fi
+}
+
 install_mod() {
 
   # Real /system can be found here.
   #
-  local mirror=/sbin/.magisk/mirror
+  mirror=/sbin/.magisk/mirror
+  lib=secure_storage
 
   if [ -f $mirror/system/lib/libsecure_storage.so ]; then
-    # Pie or similar: Move .so files to /system.
-    #
+
+    if [ $major -eq 10 ]; then
+
+      # 10 or similar: Patch libbluetooth.so.
+      rm -rf $MODPATH/system/*
+      patch_libbluetooth
+    else
+      # Pie or similar: Move .so files to /system.
+      #
+      mv $MODPATH/system/vendor/* $MODPATH/system && rmdir $MODPATH/system/vendor
+    fi
+
     local instdir=/system
-    mv $MODPATH/system/vendor/* $MODPATH/system && rmdir $MODPATH/system/vendor
 
   else
     # Oreo or similar: Leave .so files in /vendor.
@@ -194,5 +229,5 @@ install_mod() {
     local instdir=/vendor
   fi
 
-  ui_print "- When active, the module will mask .so files in $instdir/{lib,lib64}."
+  ui_print "- When active, the module will mask lib$lib.so in $instdir."
 }
