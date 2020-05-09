@@ -2,15 +2,38 @@
 
 ## Description
 
-This Magisk module contains modified `libsecure_storage.so` libraries that allow rooted Samsung Galaxy S10e/S10/S10+/S10+ 5G (G970F/G973F/G975F/G977B), Note 10/10+/10+ 5G (N970F/G975F/G976B), S9/S9+ (G960F/G965F), Tab S4 (T830/T835), Tab S5e (T720/T725), Tab S6 (T860/T865), Galaxy Fold/Fold 5G (F900F/F907B) and other devices to function without losing Bluetooth pairings after a reboot.
+This Magisk module allows rooted Samsung Galaxy S10e/S10/S10+/S10+ 5G
+(G970F/G973F/G975F/G977B), Note 10/10+/10+ 5G (N970F/G975F/G976B), S9/S9+
+(G960F/G965F), Tab S4 (T830/T835), Tab S5e (T720/T725), Tab S6 (T860/T865),
+Galaxy Fold/Fold 5G (F900F/F907B) and other devices to function without losing
+Bluetooth pairings after a reboot.
 
-When Android 10 is detected, `libbluetooth.so` will be masked instead of `libsecure_storage.so`.
+## Android 10 and later
 
-The module was developed and tested on Android 8.x (Oreo), 9.x (Pie) and 10. It is known to function as intended on the aforementioned device models.
+When Android 10 is detected, the `libbluetooth.so` library on your device will
+be masked. Rather than include a patched version of the library in the module,
+an attempt will be made to prepare a patched copy from the library on your
+device.
 
-Support for Android 9.x (Pie) systems was added in version 1.4. Since version 2.0, Android 10 has also been supported.
+If patching fails at installation time, your device is either unsupported or
+has already had its `libbluetooth.so` hard-patched (e.g. by the
+[Multi-disabler](https://forum.xda-developers.com/galaxy-s10/samsung-galaxy-s10--s10--s10-5g-cross-device-development-exynos/g97xf-multi-disabler-encryption-t3919714)).
+If you find your device is unsupported, you are advised to migrate to Arthur
+Trouillot's [Bluetooth Library
+Patcher](https://github.com/Magisk-Modules-Repo/BluetoothLibraryPatcher)
+module. That module more comprehensively supports Android 10 devices and it is
+not my intention to duplicate that effort here. Android 10 support in the
+**libsecure_storage companion** should be regarded as transitional.
 
-After installing this module, you may wish to manually edit `/system/etc/init/secure_storage_daemon.rc` or `/vendor/etc/init/secure_storage_daemon.rc` (if either exists) to change the line that reads:
+## Android 9 and earlier
+
+The module contains modified `libsecure_storage.so` libraries for use on these
+systems. These modified versions will be used to mask the ones on your device.
+
+After installing the module, you may wish to manually edit
+`/system/etc/init/secure_storage_daemon.rc` or
+`/vendor/etc/init/secure_storage_daemon.rc` (if either exists) to change the
+line that reads:
 
 ```
 start secure_storage
@@ -22,11 +45,26 @@ to:
 stop secure_storage
 ```
 
-Whilst not required, this extra step will prevent the secure storage daemon from running unnecessarily. This change cannot be dynamically applied by Magisk, because the file is read early in the boot process before Magisk runs.
+Whilst not required, this extra step will prevent the secure storage daemon
+from running unnecessarily. This change cannot be dynamically applied by
+Magisk, because the file is read early in the boot process before Magisk runs.
 
 No files other than the ones provided by this module are required.
 
+## Testing
+
+The module was developed and has been tested on Android 8.x (Oreo), 9.x (Pie)
+and 10.
+
 ## Changelog
+
+2020-05-09: v2.1
+
+- Support Snapdragon devices updated to Android 10.
+
+- Improve robustness of detecting successful patch of libbluetooth.so.
+    
+- Fix mode of patched libbluetooth.so to match original.
 
 2019-12-13: v2.0
 
@@ -45,7 +83,8 @@ No files other than the ones provided by this module are required.
   not clear which devices, if any, need these, and certainly no Samsung device
   launched in 2019 needs them.
 
-- Android 9 (Pie) support is now deemed stable and will no longer issue a warning.
+- Android 9 (Pie) support is now deemed stable and will no longer issue a
+  warning.
 
 2019-03-29: v1.7
 
@@ -53,15 +92,19 @@ No files other than the ones provided by this module are required.
 
 2019-03-21: v1.6
 
-- S10e/S10/S10+ doesn't suffer from delayed Bluetooth initialisation, so it is exempt from installation of the extra support files for Pie devices added in v1.5.
+- S10e/S10/S10+ doesn't suffer from delayed Bluetooth initialisation, so it is
+  exempt from installation of the extra support files for Pie devices added in
+  v1.5.
 
 2019-02-27: v1.5
 
-- Install extra files on Pie devices to restore undelayed Bluetooth initialisation.
+- Install extra files on Pie devices to restore undelayed Bluetooth
+  initialisation.
 
 2019-02-27: v1.4
 
-- Experimental Pie support: Explicitly check for the actual location of files to be masked and act as required.
+- Experimental Pie support: Explicitly check for the actual location of files
+  to be masked and act as required.
 
 2019-02-25: v1.3
 

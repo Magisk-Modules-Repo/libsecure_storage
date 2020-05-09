@@ -1,6 +1,6 @@
 id=libsecure_storage
 name=libsecure_storage companion for rooted Samsung devices
-version=v2.0
-versionCode=20
+version=v2.1
+versionCode=21
 author=ianmacd
 description=Modified system libraries to restore retention of Bluetooth pairings on various rooted Samsung devices.
