@@ -169,7 +169,7 @@ display_os_ver() {
   # Device is either 4 or 5 characters long, depending on length of
   # bootloader string.
   #
-  local device=${bl:0:$((${#bl} - 8))}
+  device=${bl:0:$((${#bl} - 8))}
 
   ui_print ""
   ui_print "- This Android $os device is a $device running $fw firmware,"
@@ -182,18 +182,25 @@ patch_libbluetooth() {
   local f=$mirror/system/lib64/libbluetooth.so
   local tf=$MODPATH/system/lib64/libbluetooth.so
 
-  ui_print "- Attempting to patch $f..."
+  ui_print "- Attempting to patch $f...This may take a while."
   mkdir -p ${tf%/*}
 
-  # /system/bin/xxd must be used for the reconstruction, since Magisk Busybox
-  # doesn't support -r for reverse operation.
-  xxd -p $f | tr -d '\n ' |
-    sed -e 's/c8000034f4031f2af3031f2ae8030032/c8000035f4031f2af3031f2ae8031f2a/' |
-    /system/bin/xxd -rp > $tf
+  if echo $device | grep -E '[GN]9[67][0356]0|F90(0[FN]|7[BN])|T86[05]' >/dev/null; then
+    # Snapdragon based devices, such as Tab S6, Fold (5G) and Chinese S9/10/N9/10.
+    #
+    substitute='s/88000054691180522925c81a69000037e0030032/04000014691180522925c81a69000037e0031f2a/'
+  else
+    substitute='s/c8000034f4031f2af3031f2ae8030032/1f2003d5f4031f2af3031f2ae8031f2a/'
+  fi
 
-  if ! cmp $tf $f >/dev/null; then
+  # /system/bin/xxd must be used for the reconstruction, since Magisk Busybox
+  # xxd doesn't support -r for reverse operation.
+  xxd -p $f | tr -d '\n ' | sed -e $substitute | /system/bin/xxd -rp > $tf
+
+  if ! cmp $tf $f >/dev/null && [ $(stat -c '%s' $tf) -eq $(stat -c '%s' $f) ]; then
     ui_print "- Patching succeeded."
     touch -r $f $tf
+    chmod 644 $tf
     lib=bluetooth
   else
     rm -f $tf
